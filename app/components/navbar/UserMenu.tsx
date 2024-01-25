@@ -1,7 +1,7 @@
 "use client";
 import {AiOutlineMenu} from "react-icons/ai";
 import Avatar from "../Avatar";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import MenuItem from "./MenuItem";
 
 import useRegisterModal from "@/app/hooks/useRegisterModal";
@@ -35,8 +35,28 @@ const UserMenu: React.FC<UserMenuProps>= ({currentUser}) => {
         rentModal.onOpen();
     }, [currentUser, loginModal, rentModal])
 
+    const closeMenu = useCallback(() => {
+        setIsOpen(false);
+      }, []);
+    
+      useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+          const menuNode = document.getElementById('user-menu'); // Replace with the actual ID of your menu
+          if (menuNode && !menuNode.contains(event.target as Node)) {
+            closeMenu();
+          }
+        };
+    
+        document.addEventListener('click', handleClickOutside);
+    
+        return () => {
+          document.removeEventListener('click', handleClickOutside);
+        };
+      }, [closeMenu]);
+    
+
     return (
-        <div className="relative">
+        <div id="user-menu" className="relative">
             <div className="flex flex-row items-center gap-3">
                 <div onClick={onRent} className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer">
                     Host your Car
